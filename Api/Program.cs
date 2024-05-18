@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString=builder.Configuration.GetSection("connectionString").Value;
 builder.Services.AddDbContext<ToDoDbContext>(options =>options.UseSqlServer(connectionString));
-
 builder.Services.AddScoped<IAddRecord,AddRecordService>();
 builder.Services.AddScoped<IDeleteRecord,DeleteRecordService>();
 builder.Services.AddScoped<IEditRecord,EditRecordService>();
@@ -13,6 +12,11 @@ builder.Services.AddScoped<IShowAllRecords,ShowAllRecordsService>();
 
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope()) {
+var context = scope.ServiceProvider.GetRequiredService<ToDoDbContext>();
+context.Database.EnsureCreated();
+}
 
 app.MapGet("/showAllRecords", ([FromServices]IShowAllRecords showAllRecords) =>Results.Ok(showAllRecords.ShowAllRecords()));
 
@@ -31,7 +35,7 @@ app.MapPost("/addRecord/{title}/{content}",
     return status==0?Results.Ok():Results.Problem(statusCode:400);
 });
 
-app.MapPatch("/editRecord/{id}/{title}/{content}", 
+app.MapPut("/editRecord/{id}/{title}/{content}", 
 (int id,string title,string content, [FromServices]IEditRecord editRecord) => 
 {
     int status=editRecord.EditRecord(id, title, content);
