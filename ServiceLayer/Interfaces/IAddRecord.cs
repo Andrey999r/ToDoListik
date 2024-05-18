@@ -1,3 +1,3 @@
 public interface IAddRecord{
-    void AddRecord(string title, string content);
+    int AddRecord(string title, string content);
 }
