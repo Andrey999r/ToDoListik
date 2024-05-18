@@ -6,9 +6,19 @@ public class DeleteRecordService:IDeleteRecord
         this.context = context;
     }
 
-    public void DeleteRecord(int id)
+    public int DeleteRecord(int id)
     {
-        var record=context.Records.Where(x=>x.RecordId==id).FirstOrDefault();
-        context.Records.Remove(record);
+        try
+        {
+             Record record=context.Records.Where(x=>x.RecordId==id).FirstOrDefault();
+             context.Records.Remove(record);
+             context.SaveChanges();
+             return 0; 
+        }
+        catch (Exception ex)
+        {
+            return 1;
+        }     
+
     }
 }
