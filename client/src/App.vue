@@ -1,11 +1,13 @@
  <template>
   <div>
-    Работает!
+    Работает!hjgjhfgjfhkfhkmchghhhkygyhkgy
     </div>
 </template>
 
 <script>
+export default {
 
+}
 </script>
 
 <style scoped>
