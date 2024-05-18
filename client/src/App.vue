@@ -12,8 +12,64 @@
         <input type="checkbox" @click="deleteRecord(index)">
       </li>
     </ul>
+    <footer>
+      Authors: Andrey Kustov, Ivan Konovalenko
+    </footer>
   </div>
 </template>
+
+<style>
+#app {
+  max-width: 600px;
+  margin: 0;
+  padding: 20px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+li::marker {
+  font-size: 20px;
+}
+
+input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+li {
+  background-color: #fff;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+input {
+  margin-right: 5px;
+  padding: 8px;
+}
+
+footer {
+  margin-top: 20px;
+  font-size: 14px;
+}
+</style>
+
 
 <script>
 export default {
@@ -22,7 +78,7 @@ export default {
       records: [],
       newTitle: '',
       newContent: '',
-      nextId: 1  // Уникальный идентификатор для каждой задачи
+      nextId: 1
     }
   },
   methods: {
@@ -31,18 +87,16 @@ export default {
         alert('Заголовок и содержание не могут быть пустыми!');
         return;
       }
-      // Добавляем новую запись в массив records
+
       this.records.push({
         id: this.nextId++,
         title: this.newTitle,
         content: this.newContent
       });
-      // Очищаем поля ввода
       this.newTitle = '';
       this.newContent = '';
     },
     deleteRecord(index) {
-      // Удаляем запись из массива по индексу
       this.records.splice(index, 1);
     }
   }
@@ -58,7 +112,7 @@ export default {
 }
 
 input[type="checkbox"] {
-  margin-left: 10px; /* Добавляем отступ слева от чекбокса */
+  margin-left: 10px;
 }
 
 button {
