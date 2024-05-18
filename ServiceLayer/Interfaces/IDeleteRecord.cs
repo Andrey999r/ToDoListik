@@ -1,3 +1,3 @@
 public interface IDeleteRecord{
-    void DeleteRecord(int id);
+    int DeleteRecord(int id);
 }

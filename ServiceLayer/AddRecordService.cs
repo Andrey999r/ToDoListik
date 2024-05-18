@@ -6,8 +6,18 @@ public class AddRecordService:IAddRecord
         this.context = context;
     }
 
-    public void AddRecord(string title, string content)
+    public int AddRecord(string title, string content)
     {
-        context.Records.Add(new Record(){Title = title, Content = content});
+        try
+        {
+             Record record= new Record(){Title=title,Content=content};
+             context.Records.Add(record);
+             context.SaveChanges();        
+             return 0; 
+        }
+        catch (Exception ex)
+        {
+            return 1;
+        } 
     }
 }
