@@ -24,6 +24,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      url:"http://localhost:5225/",
       records: [],
       newTitle: '',
       newContent: ''
@@ -35,7 +36,7 @@ export default {
   methods: {
     async getRecords() {
       try {
-        const response = await axios.get('http://localhost:5173/showAllRecords');
+        const response = await axios.get(`${this.url}/showAllRecords`);
         this.records = response.data;
       } catch (error) {
         console.error('Error fetching records:', error);
@@ -48,10 +49,7 @@ export default {
       }
 
       try {
-        const response = await axios.post('http://localhost:5173/addRecord', {
-          title: this.newTitle,
-          content: this.newContent
-        });
+        const response = await axios.post(`${this.url}addRecord/${this.newTitle}/${this.newContent}`);
         this.records.push(response.data);
         this.newTitle = '';
         this.newContent = '';
@@ -61,7 +59,7 @@ export default {
     },
     async deleteRecord(id) {
       try {
-        await axios.delete(`http://localhost:5173/deleteRecord/${id}`);
+        await axios.delete(`${this.url}deleteRecord/${id}`);
         this.records = this.records.filter(record => record.id !== id);
       } catch (error) {
         console.error('Error deleting record:', error);
@@ -69,10 +67,7 @@ export default {
     },
     async editRecord(id, title, content) {
       try {
-        const response = await axios.put(`http://localhost:5173/editRecord/${id}`, {
-          title: title,
-          content: content
-        });
+        const response = await axios.put(`${this.url}editRecord/${id}/${title}/${content}`);
         const index = this.records.findIndex(record => record.id === id);
         if (index !== -1) {
           this.records[index] = response.data;
