@@ -9,7 +9,7 @@
     <ul>
       <li v-for="(record, index) in records" :key="record.id">
         <span>{{ record.title }} - {{ record.content }}</span>
-        <input type="checkbox" @click="deleteRecord(index)">
+        <input type="checkbox" @click="deleteRecord(record.id)">
       </li>
     </ul>
     <footer>
@@ -18,86 +18,68 @@
   </div>
 </template>
 
-<style>
-#app {
-  max-width: 600px;
-  margin: 0;
-  padding: 20px;
-  text-align: left;
-  font-family: Arial, sans-serif;
-}
-
-ul {
-  list-style-type: disc;
-  padding-left: 20px;
-}
-
-li::marker {
-  font-size: 20px;
-}
-
-input[type="checkbox"] {
-  margin-left: 10px;
-}
-
-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-li {
-  background-color: #fff;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-}
-
-input {
-  margin-right: 5px;
-  padding: 8px;
-}
-
-footer {
-  margin-top: 20px;
-  font-size: 14px;
-}
-</style>
-
-
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       records: [],
       newTitle: '',
-      newContent: '',
-      nextId: 1
+      newContent: ''
     }
   },
+  mounted() {
+    this.getRecords();
+  },
   methods: {
-    addRecord() {
+    async getRecords() {
+      try {
+        const response = await axios.get('http://localhost:5173/showAllRecords');
+        this.records = response.data;
+      } catch (error) {
+        console.error('Error fetching records:', error);
+      }
+    },
+    async addRecord() {
       if (!this.newTitle || !this.newContent) {
         alert('Заголовок и содержание не могут быть пустыми!');
         return;
       }
 
-      this.records.push({
-        id: this.nextId++,
-        title: this.newTitle,
-        content: this.newContent
-      });
-      this.newTitle = '';
-      this.newContent = '';
+      try {
+        const response = await axios.post('http://localhost:5173/addRecord', {
+          title: this.newTitle,
+          content: this.newContent
+        });
+        this.records.push(response.data);
+        this.newTitle = '';
+        this.newContent = '';
+      } catch (error) {
+        console.error('Error adding record:', error);
+      }
     },
-    deleteRecord(index) {
-      this.records.splice(index, 1);
+    async deleteRecord(id) {
+      try {
+        await axios.delete(`http://localhost:5173/deleteRecord/${id}`);
+        this.records = this.records.filter(record => record.id !== id);
+      } catch (error) {
+        console.error('Error deleting record:', error);
+      }
+    },
+    async editRecord(id, title, content) {
+      try {
+        const response = await axios.put(`http://localhost:5173/editRecord/${id}`, {
+          title: title,
+          content: content
+        });
+        const index = this.records.findIndex(record => record.id === id);
+        if (index !== -1) {
+          this.records[index] = response.data;
+        }
+      } catch (error) {
+        console.error('Error editing record:', error);
+      }
     }
   }
 }
