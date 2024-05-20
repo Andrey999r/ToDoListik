@@ -7,9 +7,10 @@
       <button @click="addRecord">Добавить задачу</button>
     </div>
     <ul>
-      <li v-for="(record, index) in records" :key="record.id">
-        <span>{{ record.title }} - {{ record.content }}</span>
-        <input type="checkbox" @click="deleteRecord(record.id)">
+      <li v-for="(record, index) in records" :key="record.RecordId">
+        <span>{{ record.title }} - {{ record.content }}-</span>
+        <button @click="deleteRecord(record.recordId)">Удалить задачу</button>
+
       </li>
     </ul>
     <footer>
@@ -36,11 +37,12 @@ export default {
   methods: {
     async getRecords() {
       try {
-        const response = await axios.get(`${this.url}/showAllRecords`);
+        const response = await axios.get(`${this.url}showAllRecords`);
         this.records = response.data;
       } catch (error) {
         console.error('Error fetching records:', error);
       }
+  
     },
     async addRecord() {
       if (!this.newTitle || !this.newContent) {
@@ -50,17 +52,18 @@ export default {
 
       try {
         const response = await axios.post(`${this.url}addRecord/${this.newTitle}/${this.newContent}`);
-        this.records.push(response.data);
         this.newTitle = '';
         this.newContent = '';
+        this.getRecords();
       } catch (error) {
         console.error('Error adding record:', error);
       }
     },
     async deleteRecord(id) {
       try {
-        await axios.delete(`${this.url}deleteRecord/${id}`);
-        this.records = this.records.filter(record => record.id !== id);
+        console.log(id);
+        await axios.post(`${this.url}deleteRecord/${id}`);
+        this.getRecords();
       } catch (error) {
         console.error('Error deleting record:', error);
       }

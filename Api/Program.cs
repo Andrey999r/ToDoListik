@@ -9,9 +9,12 @@ builder.Services.AddScoped<IAddRecord,AddRecordService>();
 builder.Services.AddScoped<IDeleteRecord,DeleteRecordService>();
 builder.Services.AddScoped<IEditRecord,EditRecordService>();
 builder.Services.AddScoped<IShowAllRecords,ShowAllRecordsService>();
+builder.Services.AddCors();
+
 
 
 var app = builder.Build();
+app.UseCors(builder => builder.AllowAnyOrigin());
 
 await using (var scope = app.Services.CreateAsyncScope()) {
 var context = scope.ServiceProvider.GetRequiredService<ToDoDbContext>();
@@ -20,7 +23,7 @@ context.Database.EnsureCreated();
 
 app.MapGet("/showAllRecords", ([FromServices]IShowAllRecords showAllRecords) =>Results.Ok(showAllRecords.ShowAllRecords()));
 
-app.MapDelete("/deleteRecord/{id}", 
+app.MapPost("/deleteRecord/{id}", 
 (int id,[FromServices]IDeleteRecord deleteRecord) =>
 {
     int status=deleteRecord.DeleteRecord(id);
