@@ -42,7 +42,7 @@ export default {
       } catch (error) {
         console.error('Error fetching records:', error);
       }
-  
+
     },
     async addRecord() {
       if (!this.newTitle || !this.newContent) {
